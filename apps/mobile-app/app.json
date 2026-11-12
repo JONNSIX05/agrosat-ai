@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "AgroSat AI Sandía",
+    "slug": "agrosat-ai-watermelon",
+    "version": "1.0.0",
+    "orientation": "default",
+    "scheme": "agrosatai",
+    "userInterfaceStyle": "dark",
+    "platforms": ["ios", "android", "web"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.agrosatai.watermelon",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "AgroSat AI utiliza tu ubicación GPS para delimitar polígonos de parcelas de sandía en campo."
+      }
+    },
+    "android": {
+      "package": "com.agrosatai.watermelon",
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": ["expo-router", "expo-location"]
+  }
+}

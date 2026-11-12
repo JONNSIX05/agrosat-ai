@@ -1,0 +1,22 @@
+# Multi-stage Dockerfile ligero para API Gateway, MS1, MS2, MS3 y MS5
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+ARG APP_NAME
+COPY package*.json nest-cli.json tsconfig*.json ./
+RUN npm install
+
+COPY libs ./libs
+COPY apps/${APP_NAME} ./apps/${APP_NAME}
+RUN npx nest build ${APP_NAME}
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ARG APP_NAME
+ENV NODE_ENV=production
+ENV APP_MAIN_PATH=dist/apps/${APP_NAME}/main.js
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+
+CMD ["sh", "-c", "node --max-old-space-size=384 ${APP_MAIN_PATH}"]

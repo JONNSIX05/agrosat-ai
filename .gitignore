@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+.cache/
+*.log
+.DS_Store
+thumbs.db
+apps/mobile-app/.expo/
+apps/mobile-app/dist/
+apps/mobile-app/node_modules/

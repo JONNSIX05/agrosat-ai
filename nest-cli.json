@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/api-gateway/src",
+  "monorepo": true,
+  "root": "apps/api-gateway",
+  "compilerOptions": {
+    "webpack": false,
+    "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+  },
+  "projects": {
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
+    "ms1-satellite-ingestion-service": {
+      "type": "application",
+      "root": "apps/ms1-satellite-ingestion-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/ms1-satellite-ingestion-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ms1-satellite-ingestion-service/tsconfig.app.json"
+      }
+    },
+    "ms2-crop-zoning-service": {
+      "type": "application",
+      "root": "apps/ms2-crop-zoning-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/ms2-crop-zoning-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ms2-crop-zoning-service/tsconfig.app.json"
+      }
+    },
+    "ms3-agronomic-telemetry-service": {
+      "type": "application",
+      "root": "apps/ms3-agronomic-telemetry-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/ms3-agronomic-telemetry-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ms3-agronomic-telemetry-service/tsconfig.app.json"
+      }
+    },
+    "ms4-virtual-agronomist-rag-service": {
+      "type": "application",
+      "root": "apps/ms4-virtual-agronomist-rag-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/ms4-virtual-agronomist-rag-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ms4-virtual-agronomist-rag-service/tsconfig.app.json"
+      }
+    },
+    "ms5-alert-notification-service": {
+      "type": "application",
+      "root": "apps/ms5-alert-notification-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/ms5-alert-notification-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ms5-alert-notification-service/tsconfig.app.json"
+      }
+    },
+    "shared-kernel": {
+      "type": "library",
+      "root": "libs/shared-kernel",
+      "entryFile": "index",
+      "sourceRoot": "libs/shared-kernel/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/shared-kernel/tsconfig.lib.json"
+      }
+    },
+    "gis-contracts": {
+      "type": "library",
+      "root": "libs/gis-contracts",
+      "entryFile": "index",
+      "sourceRoot": "libs/gis-contracts/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/gis-contracts/tsconfig.lib.json"
+      }
+    },
+    "service-contracts": {
+      "type": "library",
+      "root": "libs/service-contracts",
+      "entryFile": "index",
+      "sourceRoot": "libs/service-contracts/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/service-contracts/tsconfig.lib.json"
+      }
+    }
+  }
+}

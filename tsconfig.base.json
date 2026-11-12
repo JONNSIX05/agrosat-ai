@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "target": "ES2022",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "@agrosat/shared-kernel": ["libs/shared-kernel/src"],
+      "@agrosat/shared-kernel/*": ["libs/shared-kernel/src/*"],
+      "@agrosat/gis-contracts": ["libs/gis-contracts/src"],
+      "@agrosat/gis-contracts/*": ["libs/gis-contracts/src/*"],
+      "@agrosat/service-contracts": ["libs/service-contracts/src"],
+      "@agrosat/service-contracts/*": ["libs/service-contracts/src/*"]
+    }
+  }
+}

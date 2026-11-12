@@ -1,0 +1,257 @@
+name: agrosat-ai
+
+services:
+  agrosat_postgres:
+    build:
+      context: ./infra/docker/postgres
+      dockerfile: Dockerfile.postgis-pgvector
+    container_name: agrosat_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-agrosat_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agrosat_secret_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-agrosat_db}
+    command: >
+      postgres
+      -c shared_buffers=512MB
+      -c effective_cache_size=1024MB
+      -c work_mem=32MB
+      -c maintenance_work_mem=128MB
+      -c max_parallel_workers_per_gather=3
+      -c max_parallel_workers=6
+      -c max_connections=120
+    ports:
+      - "127.0.0.1:15432:5432"
+    volumes:
+      - agrosat_pgdata:/var/lib/postgresql/data
+      - ./infra/docker/postgres/01-init-db.sql:/docker-entrypoint-initdb.d/01-init-db.sql:ro
+    networks:
+      - agrosat_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 1536M
+        reservations:
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-agrosat_admin} -d ${POSTGRES_DB:-agrosat_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  agrosat_ms1_satellite:
+    build:
+      context: .
+      dockerfile: ./infra/docker/Dockerfile.nestjs-alpine
+      args:
+        APP_NAME: ms1-satellite-ingestion-service
+    container_name: agrosat_ms1_satellite
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: postgresql://${POSTGRES_USER:-agrosat_admin}:${POSTGRES_PASSWORD:-agrosat_secret_2026}@agrosat_postgres:5432/${POSTGRES_DB:-agrosat_db}
+      MS2_INTERNAL_URL: http://agrosat_ms2_zoning:3002
+      MS5_INTERNAL_URL: http://agrosat_ms5_alerts:3005
+    depends_on:
+      agrosat_postgres:
+        condition: service_healthy
+    networks:
+      - agrosat_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 512M
+
+  agrosat_ms2_zoning:
+    build:
+      context: .
+      dockerfile: ./infra/docker/Dockerfile.nestjs-alpine
+      args:
+        APP_NAME: ms2-crop-zoning-service
+    container_name: agrosat_ms2_zoning
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+      DATABASE_URL: postgresql://${POSTGRES_USER:-agrosat_admin}:${POSTGRES_PASSWORD:-agrosat_secret_2026}@agrosat_postgres:5432/${POSTGRES_DB:-agrosat_db}
+    depends_on:
+      agrosat_postgres:
+        condition: service_healthy
+    networks:
+      - agrosat_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 384M
+
+  agrosat_ms3_telemetry:
+    build:
+      context: .
+      dockerfile: ./infra/docker/Dockerfile.nestjs-alpine
+      args:
+        APP_NAME: ms3-agronomic-telemetry-service
+    container_name: agrosat_ms3_telemetry
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3003
+      DATABASE_URL: postgresql://${POSTGRES_USER:-agrosat_admin}:${POSTGRES_PASSWORD:-agrosat_secret_2026}@agrosat_postgres:5432/${POSTGRES_DB:-agrosat_db}
+      MS5_INTERNAL_URL: http://agrosat_ms5_alerts:3005
+    depends_on:
+      agrosat_postgres:
+        condition: service_healthy
+    networks:
+      - agrosat_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 384M
+
+  agrosat_ms4_rag:
+    build:
+      context: .
+      dockerfile: ./infra/docker/Dockerfile.ms4-onnx
+    container_name: agrosat_ms4_rag
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3004
+      DATABASE_URL: postgresql://${POSTGRES_USER:-agrosat_admin}:${POSTGRES_PASSWORD:-agrosat_secret_2026}@agrosat_postgres:5432/${POSTGRES_DB:-agrosat_db}
+      LOCAL_EMBEDDING_MODEL: Xenova/multilingual-e5-small
+      TRANSFORMERS_CACHE: /app/.cache/huggingface
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+      DEEPSEEK_MODEL: ${DEEPSEEK_MODEL:-deepseek-chat}
+      MS1_INTERNAL_URL: http://agrosat_ms1_satellite:3001
+      MS2_INTERNAL_URL: http://agrosat_ms2_zoning:3002
+      MS3_INTERNAL_URL: http://agrosat_ms3_telemetry:3003
+    volumes:
+      - agrosat_hf_cache:/app/.cache/huggingface
+    depends_on:
+      agrosat_postgres:
+        condition: service_healthy
+    networks:
+      - agrosat_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: "2.5"
+          memory: 896M
+
+  agrosat_ms5_alerts:
+    build:
+      context: .
+      dockerfile: ./infra/docker/Dockerfile.nestjs-alpine
+      args:
+        APP_NAME: ms5-alert-notification-service
+    container_name: agrosat_ms5_alerts
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3005
+      DATABASE_URL: postgresql://${POSTGRES_USER:-agrosat_admin}:${POSTGRES_PASSWORD:-agrosat_secret_2026}@agrosat_postgres:5432/${POSTGRES_DB:-agrosat_db}
+      N8N_ALERT_WEBHOOK_URL: http://agrosat_n8n:5678/webhook/agrosat-watermelon-alert
+    depends_on:
+      agrosat_postgres:
+        condition: service_healthy
+    networks:
+      - agrosat_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 384M
+
+  agrosat_api_gateway:
+    build:
+      context: .
+      dockerfile: ./infra/docker/Dockerfile.nestjs-alpine
+      args:
+        APP_NAME: api-gateway
+    container_name: agrosat_api_gateway
+    restart: unless-stopped
+    ports:
+      - "18080:18080"
+    environment:
+      NODE_ENV: production
+      PORT: 18080
+      MS1_INTERNAL_URL: http://agrosat_ms1_satellite:3001
+      MS2_INTERNAL_URL: http://agrosat_ms2_zoning:3002
+      MS3_INTERNAL_URL: http://agrosat_ms3_telemetry:3003
+      MS4_INTERNAL_URL: http://agrosat_ms4_rag:3004
+      MS5_INTERNAL_URL: http://agrosat_ms5_alerts:3005
+    depends_on:
+      - agrosat_ms1_satellite
+      - agrosat_ms2_zoning
+      - agrosat_ms3_telemetry
+      - agrosat_ms4_rag
+      - agrosat_ms5_alerts
+    networks:
+      - agrosat_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 256M
+
+  agrosat_nodered:
+    image: nodered/node-red:latest
+    container_name: agrosat_nodered
+    restart: unless-stopped
+    ports:
+      - "18880:1880"
+    environment:
+      TZ: America/Mexico_City
+      DEFAULT_PARCEL_ID: 00000000-0000-0000-0000-000000000001
+    volumes:
+      - agrosat_nodered_data:/data
+    networks:
+      - agrosat_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 384M
+
+  agrosat_n8n:
+    image: n8nio/n8n:latest
+    container_name: agrosat_n8n
+    restart: unless-stopped
+    ports:
+      - "15678:5678"
+    environment:
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      WEBHOOK_URL: http://109.199.117.44:15678/
+      GENERIC_TIMEZONE: America/Mexico_City
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_FARMER_CHAT_ID: ${TELEGRAM_FARMER_CHAT_ID:-}
+    volumes:
+      - agrosat_n8n_data:/home/node/.n8n
+    networks:
+      - agrosat_internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 512M
+
+networks:
+  agrosat_internal_net:
+    name: agrosat_internal_net
+    driver: bridge
+
+volumes:
+  agrosat_pgdata:
+    name: agrosat_pgdata
+  agrosat_hf_cache:
+    name: agrosat_hf_cache
+  agrosat_nodered_data:
+    name: agrosat_nodered_data
+  agrosat_n8n_data:
+    name: agrosat_n8n_data

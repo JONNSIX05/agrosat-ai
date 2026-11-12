@@ -1,0 +1,80 @@
+{
+  "name": "AgroSat AI - Bot Interactivo de Telegram (Agrónomo Virtual RAG)",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "node-telegram-trigger",
+      "name": "Escuchar Mensaje Entrante en Telegram",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [220, 320],
+      "credentials": {
+        "telegramApi": {
+          "id": "agrosat-telegram-bot-cred",
+          "name": "AgroSat Telegram Bot Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = $input.first().json.message || {};\nconst chatId = String(msg.chat?.id || '');\nconst rawText = (msg.text || '').trim();\n\nlet mappedQuestion = rawText;\nif (rawText.startsWith('/estado')) {\n  mappedQuestion = 'Dame un resumen ejecutivo del estado actual de mi parcela de sandía: cómo está el índice NDVI satelital, la humedad del suelo a 20cm y 40cm, la temperatura y si hay algún riesgo activo.';\n} else if (rawText.startsWith('/riego')) {\n  mappedQuestion = 'Según la etapa fenológica actual de mi sandía, la humedad del suelo a 20cm y 40cm y la temperatura de las últimas 24 horas, ¿cuánto y cómo debo regar hoy y qué debo cuidar en el fertirriego?';\n}\n\nreturn [{\n  json: {\n    telegramChatId: chatId,\n    farmerName: msg.from?.first_name || 'Productor',\n    question: mappedQuestion\n  }\n}];"
+      },
+      "id": "node-parse-command",
+      "name": "Interpretar Comando (/estado, /riego o Pregunta Abierta)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 320]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://agrosat_ms4_rag:3004/api/v1/agronomist/consult-by-telegram",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"telegramChatId\": \"{{ $json.telegramChatId }}\",\n  \"question\": \"{{ $json.question }}\"\n}",
+        "options": {
+          "timeout": 25000
+        }
+      },
+      "id": "node-http-ms4-consult",
+      "name": "Consultar a MS4 (ONNX Local + pgvector + DeepSeek)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [800, 320]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Interpretar Comando (/estado, /riego o Pregunta Abierta)').first().json.telegramChatId }}",
+        "text": "={{ $json.answerMarkdown }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "node-telegram-reply",
+      "name": "Responder al Agricultor en Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1100, 320],
+      "credentials": {
+        "telegramApi": {
+          "id": "agrosat-telegram-bot-cred",
+          "name": "AgroSat Telegram Bot Account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Escuchar Mensaje Entrante en Telegram": {
+      "main": [[{ "node": "Interpretar Comando (/estado, /riego o Pregunta Abierta)", "type": "main", "index": 0 }]]
+    },
+    "Interpretar Comando (/estado, /riego o Pregunta Abierta)": {
+      "main": [[{ "node": "Consultar a MS4 (ONNX Local + pgvector + DeepSeek)", "type": "main", "index": 0 }]]
+    },
+    "Consultar a MS4 (ONNX Local + pgvector + DeepSeek)": {
+      "main": [[{ "node": "Responder al Agricultor en Telegram", "type": "main", "index": 0 }]]
+    }
+  }
+}

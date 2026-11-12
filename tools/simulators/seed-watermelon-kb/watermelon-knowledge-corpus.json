@@ -1,0 +1,70 @@
+[
+  {
+    "documentCode": "SANDIA-EDAF-001",
+    "title": "Requerimientos Edafoclimáticos y Preparación de Suelo para Sandía",
+    "category": "SOIL_AND_CLIMATE",
+    "phenologicalStage": "PRE_PLANTING",
+    "content": "El cultivo de sandía (Citrullus lanatus) requiere suelos bien drenados, profundos y de textura franco-arenosa a franca, los cuales permiten un rápido calentamiento primaveral del bulbo radicular y evitan la asfixia radicular. El rango de pH óptimo se ubica entre 6.0 y 6.8, aunque tolera valores moderadamente ácidos hasta 5.5; si el pH es inferior a 5.5 se debe aplicar cal dolomítica (aportando Calcio y Magnesio) al menos 30 días antes del trasplante. Si el pH supera 7.3, disminuye drásticamente la asimilación de Hierro, Manganeso, Boro y Zinc, requiriendo acidificación en la solución nutritiva con ácido fosfórico o nítrico. La preparación del terreno exige subsolado a 40-50 cm para romper capas compactadas, formación de camas altas de 25-30 cm de altura por 1.8 a 2.5 m entre centros, e instalación de acolchado plástico (mulch negro o plata-negro) que conserva la humedad a 20 cm, controla malezas e incrementa la radiación fotosintéticamente activa reflejada hacia las guías. La temperatura óptima del suelo para germinación y trasplante es de 18°C a 25°C, y la temperatura ambiente diurna ideal oscila entre 23°C y 32°C con alta radiación solar (22 a 28 MJ/m²/día).",
+    "metadata": {
+      "optimalPh": "6.0-6.8",
+      "preferredTexture": "FRANCO_ARENOSA",
+      "criticalSoilTempC": 15
+    }
+  },
+  {
+    "documentCode": "SANDIA-RIEGO-001",
+    "title": "Manejo de Riego por Goteo según Etapa Fenológica (Emergencia y Crecimiento de Guías)",
+    "category": "IRRIGATION",
+    "phenologicalStage": "VINE_GROWTH",
+    "content": "El manejo del riego por goteo en sandía debe ajustarse estrictamente al coeficiente de cultivo (Kc) y a las lecturas de humedad volumétrica a 20 cm (zona de raíces absorbentes activas) y 40 cm (control de percolación profunda). En la Etapa 1 (Establecimiento, 0 a 18 días tras siembra/trasplante, Kc = 0.40), los riegos deben ser cortos y frecuentes manteniendo la humedad a 20 cm entre 26% y 32%, evitando saturar a 40 cm para forzar la exploración radicular y prevenir pudrición de cuello por Pythium y Phytophthora. En la Etapa 2 (Desarrollo rápido de guías, 19 a 40 días, Kc = 0.70 a 0.85), la demanda hídrica se duplica; la humedad del suelo a 20 cm nunca debe caer por debajo del 25%. Un exceso de riego y nitrógeno en esta fase provoca enviciamiento vegetativo (exceso de follaje con NDVI prematuramente alto > 0.75 pero retraso en la emisión de flores femeninas).",
+    "metadata": {
+      "kcRange": "0.40-0.85",
+      "minMoisture20cmPct": 25
+    }
+  },
+  {
+    "documentCode": "SANDIA-RIEGO-002",
+    "title": "Manejo Crítico del Riego en Floración, Cuajado, Engorde y Maduración de Sandía",
+    "category": "IRRIGATION",
+    "phenologicalStage": "FLOWERING",
+    "content": "La etapa de Floración y Cuajado de fruto (41 a 60 días, Kc = 1.00 a 1.15) es el periodo más sensible al déficit hídrico y al golpe de calor. Si la temperatura ambiente supera los 38°C con una humedad de suelo a 20 cm inferior al 25% (VPD > 2.8 kPa), se produce deshidratación del tubo polínico, aborto masivo de flores femeninas y caída de frutos recién cuajados. Durante el Engorde o Llenado de fruto (55 a 75 días, Kc = 1.05), la humedad a 20 cm debe mantenerse estable entre 28% y 34% con riegos fraccionados en 2 o 3 pulsos diarios; fluctuaciones bruscas entre sequía (< 20%) y riego pesado provocan rajado longitudinal del fruto (cracking) y necrosis apical por déficit en el transporte xilemático de Calcio. Finalmente, en la etapa de Maduración (últimos 10 a 12 días previos a cosecha, Kc = 0.65), se debe reducir progresivamente la lámina de riego en un 30-40% (manteniendo la humedad a 20 cm alrededor de 22-24%) para concentrar azúcares y superar los 11° Brix sin causar marchitez severa del dosel.",
+    "metadata": {
+      "kcRange": "0.65-1.15",
+      "criticalTempHeatShockC": 38,
+      "minMoistureFloweringPct": 26
+    }
+  },
+  {
+    "documentCode": "SANDIA-FERT-001",
+    "title": "Plan de Fertirrigación NPK, Calcio y Boro (Prevención de Necrosis Apical / Blossom-End Rot)",
+    "category": "FERTILIZATION",
+    "phenologicalStage": "ALL",
+    "content": "El programa nutricional de la sandía para un rendimiento objetivo de 50 a 70 ton/ha requiere aproximadamente 140-170 kg/ha de Nitrógeno (N), 80-100 kg/ha de Fósforo (P2O5), 200-250 kg/ha de Potasio (K2O), 120 kg/ha de Calcio (CaO) y 40 kg/ha de Magnesio (MgO). Durante el establecimiento se prioriza el Fósforo para enraizamiento (relación N:P:K de 1:2:1). En crecimiento de guías se equilibra a 1:0.5:1.2. Desde el inicio de floración y cuajado es indispensable el aporte continuo de Nitrato de Calcio vía fertirriego más aplicaciones foliares de Calcio complejado con Boro (1.5 a 2.0 kg/ha de Boro total en el ciclo). La Necrosis Apical o Pudrición Basal del fruto (Blossom-End Rot, mancha hundida oscura y corchosa en el extremo opuesto al pedúnculo) NO suele deberse a falta de Calcio en el suelo, sino a estrés hídrico (humedad a 20 cm < 22%) o alta salinidad que impide el flujo transpiratorio de Calcio hacia el fruto en rápido crecimiento. Durante el engorde y maduración se incrementa la relación de Potasio (1:0.3:2.5 con Nitrato o Sulfato de Potasio) para mejorar el color rojo de la pulpa (licopeno), grosor de corteza y grados Brix.",
+    "metadata": {
+      "disorderPrevented": "Blossom-End Rot / Corazón Hueco",
+      "keyNutrients": ["Ca", "B", "K"]
+    }
+  },
+  {
+    "documentCode": "SANDIA-PLAGAS-001",
+    "title": "Araña Roja (Tetranychus urticae), Mosca Blanca y Pulgón: Diagnóstico y Huella en el NDVI",
+    "category": "PESTS_AND_DISEASES",
+    "phenologicalStage": "ALL",
+    "content": "La Araña Roja (Tetranychus urticae) prolifera explosivamente en condiciones de alta temperatura (> 32°C) y baja humedad relativa (< 35%). Inicia en focos localizados cerca de caminos polvorientos, provocando punteado clorótico amarillo, bronceado y desecación de hojas basales que destruye la clorofila y reduce la reflectancia NIR (B08) mientras aumenta la reflectancia Roja (B04). Satelitalmente se detecta como una mancha circular o elíptica donde el NDVI cae abruptamente entre 0.18 y 0.30 puntos en menos de 7 días (descendiendo a valores de 0.25 - 0.35 en pleno desarrollo). Su control requiere mantener humedad adecuada, liberación de fitoseidos o aplicación dirigida de abamectina, bifenazato o spiromesifen alternando modos de acción. La Mosca Blanca (Bemisia tabaci) y los Pulgones (Aphis gossypii) succionan savia en brotes tiernos, secretan mielecilla que induce fumagina (reduciendo la eficiencia fotosintética y el EVI) y transmiten virus devastadores (CVYV, WMV-2); su manejo integra trampas cromáticas amarillas, mallas anti-insectos al inicio del cultivo e insecticidas sistémicos selectivos (flonicamid, cyantraniliprole o pymetrozine) respetando estrictamente a las abejas polinizadoras durante la floración.",
+    "metadata": {
+      "ndviDropSignature": "Caída localizada de 0.18 a 0.30 puntos en focos",
+      "pests": ["Tetranychus urticae", "Bemisia tabaci", "Aphis gossypii"]
+    }
+  },
+  {
+    "documentCode": "SANDIA-ENF-001",
+    "title": "Marchitez Vascular por Fusarium oxysporum y Mildiu Velloso: Correlación con Caídas de NDVI",
+    "category": "PESTS_AND_DISEASES",
+    "phenologicalStage": "ALL",
+    "content": "La Marchitez por Fusarium (Fusarium oxysporum f. sp. niveum) es el hongo de suelo más destructivo en sandía, favorecido por suelos ácidos (pH < 5.8), texturas arenosas y temperaturas de suelo entre 24°C y 30°C. Obstruye los vasos xilemáticos provocando el marchitamiento asimétrico de una o varias guías durante las horas de mayor calor, seguido de colapso irreversible de la planta y coloración pardo-rojiza en el cilindro vascular del tallo al cortarlo. En teledetección Sentinel-2, un brote de Fusarium o una rotura/taponamiento de cintilla de riego se manifiesta como un sector intraparcelario cuyo NDVI cae bruscamente por debajo de 0.30 mientras el resto de la parcela supera 0.65. Para diferenciar ambos: si los sensores de humedad a 20 cm marcan > 28% y aun así hay caída severa de NDVI y marchitez, el diagnóstico apunta a Fusarium o daño radicular por nematodos; si la humedad a 20 cm es < 18%, se trata de fallo en la línea de riego. El Mildiu Velloso (Pseudoperonospora cubensis) aparece tras lluvias o rocío prolongado (humedad relativa > 85%, VPD < 0.3 kPa), causando manchas angulares amarillas delimitadas por las nervaduras que necrosan rápidamente el dosel central de la planta.",
+    "metadata": {
+      "ndviDropSignature": "Caída severa a NDVI <= 0.28 en parche definido",
+      "diseases": ["Fusarium oxysporum f. sp. niveum", "Pseudoperonospora cubensis"]
+    }
+  }
+]

@@ -1,0 +1,24 @@
+# Multi-stage Dockerfile basado en Debian Bookworm (glibc) para MS4 (ONNX Runtime Local + DeepSeek)
+FROM node:20-bookworm-slim AS builder
+WORKDIR /app
+
+COPY package*.json nest-cli.json tsconfig*.json ./
+RUN npm install
+
+COPY libs ./libs
+COPY tools/simulators/seed-watermelon-kb ./tools/simulators/seed-watermelon-kb
+COPY apps/ms4-virtual-agronomist-rag-service ./apps/ms4-virtual-agronomist-rag-service
+RUN npx nest build ms4-virtual-agronomist-rag-service
+
+FROM node:20-bookworm-slim AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ENV TRANSFORMERS_CACHE=/app/.cache/huggingface
+
+RUN mkdir -p /app/.cache/huggingface
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/tools/simulators/seed-watermelon-kb ./tools/simulators/seed-watermelon-kb
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 3004
+CMD ["node", "--max-old-space-size=768", "dist/apps/ms4-virtual-agronomist-rag-service/main.js"]

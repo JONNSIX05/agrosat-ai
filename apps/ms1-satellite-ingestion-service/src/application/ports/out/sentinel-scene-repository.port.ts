@@ -6,6 +6,7 @@ export const SENTINEL_SCENE_REPOSITORY_PORT = Symbol('SENTINEL_SCENE_REPOSITORY_
 export interface SentinelSceneRepositoryPort {
   saveSceneWithSubcells(scene: SentinelSceneAggregate): Promise<SentinelSceneAggregate>;
   findLatestSceneWithSubcellsByParcelId(parcelId: string): Promise<SentinelSceneAggregate | null>;
+  findSceneWithSubcellsById(sceneId: string): Promise<SentinelSceneAggregate | null>;
   findPreviousSceneSummary(
     parcelId: string,
     beforeSceneId?: string,

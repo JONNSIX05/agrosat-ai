@@ -52,7 +52,7 @@ export class DeepSeekLlmAdapter implements LlmCompletionPort {
           { role: 'system', content: params.systemPrompt },
           { role: 'user', content: params.userPrompt },
         ],
-        max_tokens: params.maxTokens ?? 700,
+        max_tokens: params.maxTokens ?? 1400,
         temperature: params.temperature ?? 0.25,
       });
 

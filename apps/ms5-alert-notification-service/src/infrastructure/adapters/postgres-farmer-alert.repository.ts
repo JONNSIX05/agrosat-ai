@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PostgresService } from '@agrosat/shared-kernel';
 import {
   FarmerAlertRepositoryPort,
@@ -30,8 +30,55 @@ interface SubscriberRow {
 }
 
 @Injectable()
-export class PostgresFarmerAlertRepository implements FarmerAlertRepositoryPort {
+export class PostgresFarmerAlertRepository implements FarmerAlertRepositoryPort, OnModuleInit {
+  private readonly logger = new Logger(PostgresFarmerAlertRepository.name);
+
   constructor(private readonly pg: PostgresService) {}
+
+  public async onModuleInit(): Promise<void> {
+    try {
+      // Eliminar suscriptor semilla obsoleto (583920194) y sus alertas fallidas previas
+      await this.pg.query(
+        `
+        DELETE FROM ms5_alerts.triggered_alerts
+        WHERE farmer_id IN (
+          SELECT id FROM ms5_alerts.farmers WHERE telegram_chat_id = '583920194'
+        )
+        OR n8n_webhook_status = 'FAILED_N8N_UNREACHABLE';
+        `,
+      );
+      await this.pg.query(
+        `
+        DELETE FROM ms5_alerts.farmer_parcel_subscriptions
+        WHERE farmer_id IN (
+          SELECT id FROM ms5_alerts.farmers WHERE telegram_chat_id = '583920194'
+        );
+        `,
+      );
+      await this.pg.query(
+        `
+        DELETE FROM ms5_alerts.farmers
+        WHERE telegram_chat_id = '583920194';
+        `,
+      );
+
+      // Asegurar que el suscriptor real Juan Carlos Reyes (1074033728) esté activo
+      await this.upsertFarmerAndSubscription({
+        fullName: 'Juan Carlos Reyes',
+        telegramChatId: '1074033728',
+        telegramUsername: 'JamesFranco05',
+        parcelId: '00000000-0000-0000-0000-000000000001',
+        parcelAlias: 'Parcela Sandía Lote Norte',
+        cooldownMinutes: 1,
+      });
+
+      this.logger.log(
+        '✅ Suscriptor demo obsoleto (583920194) depurado; suscriptor activo: Juan Carlos Reyes (chat_id: 1074033728)',
+      );
+    } catch (err) {
+      this.logger.warn(`Aviso en depuración inicial de suscriptores MS5: ${(err as Error).message}`);
+    }
+  }
 
   public async upsertFarmerAndSubscription(params: {
     farmerId?: string;
@@ -43,6 +90,19 @@ export class PostgresFarmerAlertRepository implements FarmerAlertRepositoryPort 
     parcelAlias: string;
     cooldownMinutes: number;
   }): Promise<ParcelSubscriberContext> {
+    // Buscar si ya existe por telegram_chat_id o por id para evitar colisión de PK/Unique
+    const existingRes = await this.pg.query<{ id: string }>(
+      `
+      SELECT id
+      FROM ms5_alerts.farmers
+      WHERE telegram_chat_id = $1::varchar
+      LIMIT 1;
+      `,
+      [params.telegramChatId],
+    );
+
+    const targetId = existingRes.rows[0]?.id ?? params.farmerId ?? randomUUID();
+
     const farmerRes = await this.pg.query<{
       id: string;
       full_name: string;
@@ -75,7 +135,7 @@ export class PostgresFarmerAlertRepository implements FarmerAlertRepositoryPort 
       RETURNING *;
       `,
       [
-        params.farmerId ?? randomUUID(),
+        targetId,
         params.fullName,
         params.phoneNumber ?? null,
         params.telegramChatId,

@@ -39,6 +39,11 @@ export class SatelliteIngestionController {
     return this.getLatestGridUseCase.execute(parcelId);
   }
 
+  @Get('api/v1/satellite/scenes/:sceneId/grid')
+  public async getSceneGridById(@Param('sceneId') sceneId: string) {
+    return this.getLatestGridUseCase.executeBySceneId(sceneId);
+  }
+
   @Get('api/v1/satellite/parcels/:parcelId/heatmap')
   public async getParcelHeatmapAlias(@Param('parcelId') parcelId: string) {
     return this.getLatestGridUseCase.execute(parcelId);

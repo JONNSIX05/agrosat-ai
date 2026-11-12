@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   SentinelSceneGridResponseDto,
   SentinelSceneMapper,
@@ -29,5 +29,21 @@ export class GetLatestParcelGridUseCase {
     }
 
     return this.simulatePassUseCase.execute(parcelId, {});
+  }
+
+  /**
+   * Obtiene una escena satelital específica por su UUID junto con las 168 subceldas PostGIS.
+   */
+  public async executeBySceneId(sceneId: string): Promise<SentinelSceneGridResponseDto> {
+    const existingScene = await this.sceneRepo.findSceneWithSubcellsById(sceneId);
+    if (!existingScene) {
+      throw new NotFoundException({
+        statusCode: 404,
+        errorCode: 'SENTINEL_SCENE_NOT_FOUND',
+        message: `No se encontró la escena satelital con ID ${sceneId}.`,
+      });
+    }
+
+    return SentinelSceneMapper.toGridResponseDto(existingScene);
   }
 }

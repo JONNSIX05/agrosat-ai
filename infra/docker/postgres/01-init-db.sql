@@ -200,10 +200,10 @@ CREATE INDEX IF NOT EXISTS idx_ms5_alerts_parcel_rule_time
 INSERT INTO ms5_alerts.farmers (id, full_name, phone_number, telegram_chat_id, telegram_username)
 VALUES (
     '00000000-0000-0000-0000-000000000010',
-    'Productor Demo AgroSat',
+    'Juan Carlos Reyes',
     '+528710000000',
-    '583920194',
-    'agrosat_farmer'
+    '1074033728',
+    'JamesFranco05'
 ) ON CONFLICT (id) DO NOTHING;
 
 WITH demo_poly AS (

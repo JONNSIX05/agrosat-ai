@@ -184,7 +184,30 @@ export class PostgisSceneRepository implements SentinelSceneRepositoryPort {
       return null;
     }
 
-    const row = sceneRes.rows[0];
+    return this.hydrateSceneWithSubcells(sceneRes.rows[0]);
+  }
+
+  public async findSceneWithSubcellsById(
+    sceneId: string,
+  ): Promise<SentinelSceneAggregate | null> {
+    const sceneRes = await this.pg.query<SceneRow>(
+      `
+      SELECT *
+      FROM ms1_satellite.sentinel_scenes
+      WHERE id = $1::uuid
+      LIMIT 1;
+      `,
+      [sceneId],
+    );
+
+    if (sceneRes.rowCount === 0) {
+      return null;
+    }
+
+    return this.hydrateSceneWithSubcells(sceneRes.rows[0]);
+  }
+
+  private async hydrateSceneWithSubcells(row: SceneRow): Promise<SentinelSceneAggregate> {
     const cellsRes = await this.pg.query<SubcellRow>(
       `
       SELECT

@@ -79,7 +79,7 @@ export class AskVirtualAgronomistUseCase {
     const llmResult = await this.llmCompletion.generateCompletion({
       systemPrompt,
       userPrompt,
-      maxTokens: 700,
+      maxTokens: 1400,
       temperature: 0.25,
       fallbackContent: fallbackSynthesis,
     });

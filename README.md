@@ -18,7 +18,7 @@ Plataforma basada en **Microservicios (Monorepo NestJS + TypeScript)** diseñada
 ## 🚀 Estado de Avance por Fases
 
 - [x] **Fase 0 (Sprint 0)**: Configuración del Monorepo NestJS, Librerías Compartidas (`@agrosat/shared-kernel`, `@agrosat/gis-contracts`, `@agrosat/service-contracts`), Base de Datos Unificada (`PostGIS 3.4` + `pgvector 0.7` con los 5 esquemas y semilla inicial) y Activos de Simulación (`Node-RED`, `n8n`, Corpus de Sandía).
-- [ ] **Fase 1 (Sprint 1)**: Implementación de `MS2 (crop-zoning-service)` — Polígonos GIS en PostGIS y Aptitud Edafológica para Sandía.
+- [x] **Fase 1 (Sprint 1)**: Implementación de `MS2 (crop-zoning-service)` — Polígonos GIS en PostGIS y Aptitud Edafológica para Sandía.
 - [ ] **Fase 2 (Sprint 2)**: Implementación de `MS1 (satellite-ingestion-service)` — Grillas Espaciales PostGIS e Índices NDVI/EVI con Ruido Perlin 2D.
 - [ ] **Fase 3 (Sprint 3)**: Implementación de `MS3 (agronomic-telemetry-service)` y `MS5 (alert-notification-service)` — Integración con Node-RED, n8n y Telegram Bot API.
 - [ ] **Fase 4 (Sprint 4)**: Implementación de `MS4 (virtual-agronomist-rag-service)` — Embeddings Locales ONNX (`VECTOR(384)`) + `pgvector` + API Oficial de DeepSeek.

@@ -14,9 +14,9 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 ARG APP_NAME
 ENV NODE_ENV=production
-ENV APP_MAIN_PATH=dist/apps/${APP_NAME}/main.js
+ENV APP_NAME=${APP_NAME}
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 
-CMD ["sh", "-c", "node --max-old-space-size=384 ${APP_MAIN_PATH}"]
+CMD ["sh", "-c", "MAIN_FILE=$(find dist/apps/${APP_NAME} -name 'main.js' | head -n 1) && node --max-old-space-size=384 ${MAIN_FILE}"]

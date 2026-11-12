@@ -21,4 +21,4 @@ COPY --from=builder /app/tools/simulators/seed-watermelon-kb ./tools/simulators/
 COPY --from=builder /app/dist ./dist
 
 EXPOSE 3004
-CMD ["node", "--max-old-space-size=768", "dist/apps/ms4-virtual-agronomist-rag-service/main.js"]
+CMD ["sh", "-c", "MAIN_FILE=$(find dist/apps/ms4-virtual-agronomist-rag-service -name 'main.js' | head -n 1) && node --max-old-space-size=768 ${MAIN_FILE}"]

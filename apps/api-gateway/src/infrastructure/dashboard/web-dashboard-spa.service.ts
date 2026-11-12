@@ -441,7 +441,10 @@ export class WebDashboardSpaService {
       sel.innerHTML = parcelsCache.map(p =>
         \`<option value="\${p.parcelId}" \${p.parcelId === currentParcelId ? 'selected' : ''}>🍉 \${p.parcelName} (\${p.areaHectares} ha - \${p.watermelonVariety})</option>\`
       ).join('');
-      if (parcelsCache.length && !parcelsCache.find(p => p.parcelId === currentParcelId)) {
+      const defaultDemo = parcelsCache.find(p => p.parcelId === '00000000-0000-0000-0000-000000000001');
+      if (defaultDemo) {
+        currentParcelId = defaultDemo.parcelId;
+      } else if (parcelsCache.length && !parcelsCache.find(p => p.parcelId === currentParcelId)) {
         currentParcelId = parcelsCache[0].parcelId;
       }
       renderSelectedParcelInfo();

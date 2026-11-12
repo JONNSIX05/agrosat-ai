@@ -94,6 +94,8 @@ export class WebDashboardSpaService {
 
     html {
       scroll-behavior: smooth;
+      overflow-x: hidden;
+      max-width: 100vw;
     }
 
     body {
@@ -101,9 +103,25 @@ export class WebDashboardSpaService {
       background: var(--bg-base);
       color: var(--text-primary);
       min-height: 100vh;
+      max-width: 100vw;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    /* Modo compacto cuando corre dentro del contenedor nativo Android */
+    body.is-android-app header.top-header {
+      padding: 7px 14px;
+    }
+    body.is-android-app .brand-sub {
+      display: none;
+    }
+    body.is-android-app .mobile-bottom-nav {
+      display: none !important;
+    }
+    body.is-android-app {
+      padding-bottom: 10px !important;
     }
 
     /* =========================================================================
@@ -276,30 +294,32 @@ export class WebDashboardSpaService {
        ========================================================================= */
     .exec-ribbon {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
       gap: 10px;
       padding: 12px 16px 0 16px;
+      width: 100%;
     }
 
     .exec-pill-card {
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 10px 13px;
+      padding: 10px 12px;
       display: flex;
       align-items: center;
-      gap: 11px;
+      gap: 10px;
       box-shadow: var(--shadow-card);
+      min-width: 0;
     }
 
     .exec-icon {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 19px;
+      font-size: 18px;
       flex-shrink: 0;
     }
 
@@ -309,28 +329,27 @@ export class WebDashboardSpaService {
     }
 
     .exec-label {
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--text-muted);
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.35px;
     }
 
     .exec-value {
       font-family: 'Outfit', sans-serif;
-      font-size: 16px;
+      font-size: clamp(13.5px, 1.15vw, 15.5px);
       font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      line-height: 1.2;
+      word-break: break-word;
     }
 
     .exec-sub {
       font-size: 11px;
       color: var(--text-secondary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      line-height: 1.25;
+      margin-top: 1px;
+      word-break: break-word;
     }
 
     /* =========================================================================
@@ -338,10 +357,11 @@ export class WebDashboardSpaService {
        ========================================================================= */
     .main-grid {
       display: grid;
-      grid-template-columns: 1.32fr 1fr;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
       gap: 14px;
       padding: 14px 16px 28px 16px;
       flex: 1;
+      width: 100%;
     }
 
     .col-stack {
@@ -987,21 +1007,50 @@ export class WebDashboardSpaService {
     }
 
     /* =========================================================================
-       RESPONSIVE BREAKPOINTS (TABLET Y NAVEGADOR MÓVIL)
+       RESPONSIVE BREAKPOINTS (LAPTOP, TABLET HORIZONTAL/VERTICAL Y MÓVIL)
        ========================================================================= */
-    @media (max-width: 1180px) {
+    @media (max-width: 1320px) {
       .exec-ribbon {
-        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+      .main-grid {
+        grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+        gap: 12px;
+        padding: 12px;
+      }
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .card {
+        padding: 12px;
+      }
+      #agroMap {
+        height: 380px;
+      }
+      .chat-box {
+        height: 330px;
+      }
+    }
+
+    @media (max-width: 960px) {
+      body {
+        padding-bottom: 68px;
       }
       .main-grid {
         grid-template-columns: 1fr;
       }
+      .kpi-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .mobile-bottom-nav {
+        display: flex;
+      }
+      #toastContainer {
+        bottom: 74px;
+      }
     }
 
-    @media (max-width: 768px) {
-      body {
-        padding-bottom: 66px;
-      }
+    @media (max-width: 680px) {
       header.top-header {
         padding: 10px 12px;
       }
@@ -1016,20 +1065,29 @@ export class WebDashboardSpaService {
         justify-content: space-between;
       }
       .header-controls select#parcelSelect {
+        width: 100%;
+        flex: 1 1 100%;
+        order: -1;
+      }
+      .header-controls button {
         flex: 1;
-        min-width: 160px;
+        padding: 8px 8px;
+        font-size: 12px;
       }
       .exec-ribbon {
         grid-template-columns: repeat(2, 1fr);
         padding: 10px 10px 0 10px;
         gap: 8px;
       }
+      .exec-ribbon .exec-pill-card:last-child {
+        grid-column: 1 / -1;
+      }
       .main-grid {
         padding: 10px;
         gap: 12px;
       }
       #agroMap {
-        height: 330px;
+        height: 310px;
       }
       .chaos-bar {
         grid-template-columns: 1fr;
@@ -1040,8 +1098,10 @@ export class WebDashboardSpaService {
       .kpi-grid {
         grid-template-columns: repeat(2, 1fr);
       }
-      .mobile-bottom-nav {
-        display: flex;
+      .draw-controls-row input,
+      .draw-controls-row select,
+      .draw-controls-row button {
+        flex: 1 1 auto;
       }
       #toastContainer {
         bottom: 74px;
@@ -1167,12 +1227,19 @@ export class WebDashboardSpaService {
 
         <!-- Barra Interactiva de Trazado de Polígonos PostGIS -->
         <div id="drawHelpBar" class="draw-toolbar">
-          <div>
-            <strong>✏️ Modo Trazado Topológico PostGIS (SRID 4326):</strong> Marca al menos 3 vértices sobre el mapa satelital para delimitar el nuevo lote.
-            <span id="drawVerticesCount" class="status-pill" style="margin-left:6px;">0 vértices</span>
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+            <div>
+              <strong>✏️ Modo Trazado Topológico PostGIS (Chiapas, México • SRID 4326):</strong> Marca al menos 3 vértices sobre el mapa satelital.
+              <span id="drawVerticesCount" class="status-pill" style="margin-left:6px;">0 vértices</span>
+            </div>
+            <div style="display:flex; gap:5px; flex-wrap:wrap;">
+              <button type="button" style="padding:4px 8px; font-size:11px;" onclick="flyToChiapasRegion(16.2250, -93.2350, 'Parcela Sandía La Frailesca (Villaflores, Chis.)')">📍 Villaflores</button>
+              <button type="button" style="padding:4px 8px; font-size:11px;" onclick="flyToChiapasRegion(16.6620, -93.7350, 'Parcela Sandía Valle de Cintalapa (Chis.)')">📍 Cintalapa</button>
+              <button type="button" style="padding:4px 8px; font-size:11px;" onclick="flyToChiapasRegion(14.8450, -92.3150, 'Parcela Sandía Soconusco (Tapachula, Chis.)')">📍 Soconusco</button>
+            </div>
           </div>
           <div class="draw-controls-row">
-            <input type="text" id="newParcelName" placeholder="Nombre del lote" value="Parcela Sandía Lote Este" style="min-width:175px;" />
+            <input type="text" id="newParcelName" placeholder="Nombre del lote en Chiapas" value="Parcela Sandía Soconusco (Tapachula, Chiapas)" style="min-width:190px;" />
             <select id="newParcelVariety" aria-label="Variedad de sandía">
               <option value="Crimson Sweet">🍉 Crimson Sweet (Ciclo 85 días)</option>
               <option value="Charleston Gray">🍉 Charleston Gray (Resistente Fusarium)</option>
@@ -1413,13 +1480,13 @@ export class WebDashboardSpaService {
     }
 
     // =========================================================================
-    // 3. INICIALIZACIÓN DEL MAPA LEAFLET POSTGIS
+    // 3. INICIALIZACIÓN DEL MAPA LEAFLET POSTGIS (ESTADO DE CHIAPAS, MÉXICO)
     // =========================================================================
     function initMap() {
-      map = L.map('agroMap', { center: [25.5420, -103.4138], zoom: 16 });
+      map = L.map('agroMap', { center: [16.2250, -93.2350], zoom: 16 });
       const esriSat = L.tileLayer(
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        { attribution: 'Tiles &copy; Esri — AgroSat AI PostGIS' }
+        { attribution: 'Tiles &copy; Esri — AgroSat AI PostGIS (Chiapas, México)' }
       );
       const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap'
@@ -1436,6 +1503,22 @@ export class WebDashboardSpaService {
         drawnCoords.push([Number(e.latlng.lng.toFixed(6)), Number(e.latlng.lat.toFixed(6))]);
         renderDrawPreview();
       });
+
+      window.addEventListener('resize', () => {
+        if (map) {
+          setTimeout(() => map.invalidateSize(), 150);
+        }
+      });
+    }
+
+    function flyToChiapasRegion(lat, lon, defaultName) {
+      if (!map) return;
+      map.setView([lat, lon], 16);
+      if (defaultName) {
+        const nameInput = document.getElementById('newParcelName');
+        if (nameInput) nameInput.value = defaultName;
+      }
+      showToast('📍 Vista centrada en valle agrícola de Chiapas (' + lat.toFixed(4) + ', ' + lon.toFixed(4) + ')');
     }
 
     function centerOnCurrentParcel() {
@@ -2207,6 +2290,9 @@ export class WebDashboardSpaService {
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      if (window.AgroSatAndroidApp || navigator.userAgent.includes('AgroSatAndroidTablet')) {
+        document.body.classList.add('is-android-app');
+      }
       initTheme();
       initMap();
       refreshAll(true);

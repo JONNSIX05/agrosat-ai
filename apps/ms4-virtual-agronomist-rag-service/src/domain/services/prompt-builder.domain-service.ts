@@ -109,7 +109,7 @@ export class PromptBuilderDomainService {
     const primaryChunk = params.retrievedChunks[0];
     const secondaryChunk = params.retrievedChunks[1];
 
-    const parcelName = p?.parcelName ?? 'Parcela Sandía Lote Norte';
+    const parcelName = p?.parcelName ?? 'Parcela Sandía La Frailesca (Villaflores, Chiapas)';
     const variety = p?.watermelonVariety ?? 'Crimson Sweet';
     const stage = s?.phenologicalStage ?? 'FLOWERING';
     const das = s?.daysAfterPlanting ?? 48;

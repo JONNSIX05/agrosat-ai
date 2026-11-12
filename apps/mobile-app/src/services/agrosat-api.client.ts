@@ -67,8 +67,9 @@ export class AgroSatApiClient {
     return (await response.json()) as T;
   }
 
-  public listParcels(): Promise<ParcelDto[]> {
-    return this.request<ParcelDto[]>('/api/v1/zoning/parcels');
+  public async listParcels(): Promise<ParcelDto[]> {
+    const data = await this.request<ParcelDto[] | { parcels: ParcelDto[] }>('/api/v1/zoning/parcels');
+    return Array.isArray(data) ? data : (data.parcels ?? []);
   }
 
   public createParcel(payload: {
@@ -83,7 +84,7 @@ export class AgroSatApiClient {
     });
   }
 
-  public getLatestSatelliteGrid(parcelId: string): Promise<{
+  public async getLatestSatelliteGrid(parcelId: string): Promise<{
     scene: {
       sceneId: string;
       sceneCode: string;
@@ -93,11 +94,46 @@ export class AgroSatApiClient {
       minNdvi: number;
       maxNdvi: number;
       meanEvi: number;
+      stressedCellsPct?: number;
       hasStressPatch: boolean;
     };
     gridGeoJson: { type: 'FeatureCollection'; features: SubcellFeature[] };
   }> {
-    return this.request(`/api/v1/satellite/parcels/${parcelId}/latest-grid`);
+    const raw = await this.request<{
+      scene: any;
+      featureCollection?: { type: 'FeatureCollection'; features: SubcellFeature[] };
+      gridGeoJson?: { type: 'FeatureCollection'; features: SubcellFeature[] };
+    }>(`/api/v1/satellite/parcels/${parcelId}/latest-grid`);
+    return {
+      scene: raw.scene,
+      gridGeoJson: raw.featureCollection ?? raw.gridGeoJson ?? { type: 'FeatureCollection', features: [] },
+    };
+  }
+
+  public async getSceneGridById(sceneId: string): Promise<{
+    scene: {
+      sceneId: string;
+      sceneCode: string;
+      daysAfterPlanting: number;
+      phenologicalStage: string;
+      meanNdvi: number;
+      minNdvi: number;
+      maxNdvi: number;
+      meanEvi: number;
+      stressedCellsPct?: number;
+      hasStressPatch: boolean;
+    };
+    gridGeoJson: { type: 'FeatureCollection'; features: SubcellFeature[] };
+  }> {
+    const raw = await this.request<{
+      scene: any;
+      featureCollection?: { type: 'FeatureCollection'; features: SubcellFeature[] };
+      gridGeoJson?: { type: 'FeatureCollection'; features: SubcellFeature[] };
+    }>(`/api/v1/satellite/scenes/${sceneId}/grid`);
+    return {
+      scene: raw.scene,
+      gridGeoJson: raw.featureCollection ?? raw.gridGeoJson ?? { type: 'FeatureCollection', features: [] },
+    };
   }
 
   public getSatelliteTimeSeries(parcelId: string): Promise<{
@@ -152,7 +188,7 @@ export class AgroSatApiClient {
     return this.request(`/api/v1/telemetry/parcels/${parcelId}/history?limit=${limit}`);
   }
 
-  public listParcelAlerts(parcelId: string): Promise<
+  public async listParcelAlerts(parcelId: string): Promise<
     Array<{
       alertId: string;
       ruleCode: string;
@@ -163,7 +199,8 @@ export class AgroSatApiClient {
       triggeredAt: string;
     }>
   > {
-    return this.request(`/api/v1/alerts/parcels/${parcelId}?limit=15`);
+    const raw = await this.request<any>(`/api/v1/alerts/parcels/${parcelId}?limit=15`);
+    return Array.isArray(raw) ? raw : (raw.alerts ?? []);
   }
 
   public linkTelegramSubscription(payload: {

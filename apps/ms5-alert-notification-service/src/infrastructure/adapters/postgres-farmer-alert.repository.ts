@@ -68,7 +68,7 @@ export class PostgresFarmerAlertRepository implements FarmerAlertRepositoryPort,
         telegramChatId: '1074033728',
         telegramUsername: 'JamesFranco05',
         parcelId: '00000000-0000-0000-0000-000000000001',
-        parcelAlias: 'Parcela Sandía Lote Norte',
+        parcelAlias: 'Parcela Sandía La Frailesca (Villaflores, Chiapas)',
         cooldownMinutes: 1,
       });
 
@@ -184,7 +184,7 @@ export class PostgresFarmerAlertRepository implements FarmerAlertRepositoryPort,
       parcelId: params.parcelId,
       parcelAlias: params.parcelAlias,
       cooldownMinutes: params.cooldownMinutes,
-      centroid: { lon: -103.4138, lat: 25.542 },
+      centroid: { lon: -93.235, lat: 16.225 },
     };
   }
 
@@ -201,7 +201,7 @@ export class PostgresFarmerAlertRepository implements FarmerAlertRepositoryPort,
         f.telegram_username,
         f.is_notifications_enabled,
         COALESCE(s.parcel_id, p.id, $1::uuid) AS parcel_id,
-        COALESCE(s.parcel_alias, p.parcel_name, 'Parcela Sandía AgroSat') AS parcel_alias,
+        COALESCE(p.parcel_name, s.parcel_alias, 'Parcela Sandía La Frailesca (Chiapas)') AS parcel_alias,
         COALESCE(s.cooldown_minutes, 15) AS cooldown_minutes,
         ST_X(p.centroid_geom) AS centroid_lon,
         ST_Y(p.centroid_geom) AS centroid_lat
@@ -236,8 +236,8 @@ export class PostgresFarmerAlertRepository implements FarmerAlertRepositoryPort,
       parcelAlias: r.parcel_alias,
       cooldownMinutes: Number(r.cooldown_minutes),
       centroid: {
-        lon: Number(Number(r.centroid_lon ?? -103.4138).toFixed(6)),
-        lat: Number(Number(r.centroid_lat ?? 25.542).toFixed(6)),
+        lon: Number(Number(r.centroid_lon ?? -93.235).toFixed(6)),
+        lat: Number(Number(r.centroid_lat ?? 16.225).toFixed(6)),
       },
     };
   }
@@ -255,7 +255,7 @@ export class PostgresFarmerAlertRepository implements FarmerAlertRepositoryPort,
         f.telegram_username,
         f.is_notifications_enabled,
         COALESCE(s.parcel_id, '00000000-0000-0000-0000-000000000001'::uuid) AS parcel_id,
-        COALESCE(s.parcel_alias, 'Parcela Sandía Lote Norte') AS parcel_alias,
+        COALESCE(p.parcel_name, s.parcel_alias, 'Parcela Sandía La Frailesca (Villaflores, Chiapas)') AS parcel_alias,
         COALESCE(s.cooldown_minutes, 15) AS cooldown_minutes,
         ST_X(p.centroid_geom) AS centroid_lon,
         ST_Y(p.centroid_geom) AS centroid_lat
@@ -290,8 +290,8 @@ export class PostgresFarmerAlertRepository implements FarmerAlertRepositoryPort,
       parcelAlias: r.parcel_alias,
       cooldownMinutes: Number(r.cooldown_minutes),
       centroid: {
-        lon: Number(Number(r.centroid_lon ?? -103.4138).toFixed(6)),
-        lat: Number(Number(r.centroid_lat ?? 25.542).toFixed(6)),
+        lon: Number(Number(r.centroid_lon ?? -93.235).toFixed(6)),
+        lat: Number(Number(r.centroid_lat ?? 16.225).toFixed(6)),
       },
     };
   }

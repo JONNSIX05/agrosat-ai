@@ -211,11 +211,11 @@ WITH demo_poly AS (
         ST_GeomFromGeoJSON('{
             "type": "Polygon",
             "coordinates": [[
-                [-103.4150, 25.5410],
-                [-103.4126, 25.5410],
-                [-103.4126, 25.5430],
-                [-103.4150, 25.5430],
-                [-103.4150, 25.5410]
+                [-93.2362, 16.2240],
+                [-93.2338, 16.2240],
+                [-93.2338, 16.2260],
+                [-93.2362, 16.2260],
+                [-93.2362, 16.2240]
             ]]
         }'),
         4326
@@ -235,7 +235,7 @@ INSERT INTO ms2_zoning.parcels (
 SELECT
     '00000000-0000-0000-0000-000000000001'::uuid,
     '00000000-0000-0000-0000-000000000010'::uuid,
-    'Parcela Sandía Lote Norte',
+    'Parcela Sandía La Frailesca (Villaflores, Chiapas)',
     'Crimson Sweet',
     (CURRENT_DATE - INTERVAL '48 days')::date,
     geom,

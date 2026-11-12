@@ -33,8 +33,11 @@ export class IngestTelemetryReadingUseCase {
     const parcelId =
       dto.parcelId ?? process.env.DEFAULT_PARCEL_ID ?? '00000000-0000-0000-0000-000000000001';
 
+    const resolvedTempC =
+      dto.ambientTempC !== undefined ? Number(dto.ambientTempC) : Number(dto.temperatureC);
+
     const climateVo = AmbientClimateVo.create({
-      ambientTempC: Number(dto.ambientTempC),
+      ambientTempC: resolvedTempC,
       relativeHumidityPct: Number(dto.relativeHumidityPct),
       solarRadiationWm2: Number(dto.solarRadiationWm2 ?? 450),
     });

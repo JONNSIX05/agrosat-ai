@@ -2,7 +2,8 @@ export interface IngestTelemetryReadingRequestDto {
   parcelId?: string;
   sensorNodeCode?: string;
   recordedAt?: string;
-  ambientTempC: number;
+  ambientTempC?: number;
+  temperatureC?: number;
   relativeHumidityPct: number;
   soilMoisture20cmPct: number;
   soilMoisture40cmPct?: number;

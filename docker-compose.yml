@@ -227,6 +227,7 @@ services:
     environment:
       N8N_PORT: 5678
       N8N_PROTOCOL: http
+      N8N_SECURE_COOKIE: "false"
       WEBHOOK_URL: http://109.199.117.44:15678/
       GENERIC_TIMEZONE: America/Mexico_City
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}

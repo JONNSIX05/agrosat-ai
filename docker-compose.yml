@@ -240,7 +240,7 @@ services:
       resources:
         limits:
           cpus: "1.5"
-          memory: 512M
+          memory: 896M
 
 networks:
   agrosat_internal_net:

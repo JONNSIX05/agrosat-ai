@@ -34,6 +34,11 @@ export class AlertNotificationController {
     return this.registerFarmerUseCase.execute(body);
   }
 
+  @Post('api/v1/alerts/subscriptions')
+  public async registerSubscriptionAlias(@Body() body: RegisterFarmerSubscriptionRequestDto) {
+    return this.registerFarmerUseCase.execute(body);
+  }
+
   @Get('api/v1/alerts/parcels/:parcelId')
   public async listAlertsForParcel(
     @Param('parcelId') parcelId: string,

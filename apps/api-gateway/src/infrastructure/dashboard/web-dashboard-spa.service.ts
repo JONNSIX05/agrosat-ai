@@ -377,7 +377,7 @@ export class WebDashboardSpaService {
         <div class="card-header">
           <div class="card-title">🚨 Historial de Alertas Críticas (PostgreSQL LISTEN/NOTIFY -> n8n -> Telegram)</div>
           <div style="display:flex; gap:6px; align-items:center;">
-            <input type="text" id="telegramChatIdInput" placeholder="Telegram Chat ID" value="583920194" style="width:130px; padding:5px 8px; font-size:12px;" />
+            <input type="text" id="telegramChatIdInput" placeholder="Telegram Chat ID" value="1074033728" style="width:130px; padding:5px 8px; font-size:12px;" />
             <button class="btn-green" style="padding:5px 10px; font-size:12px;" onclick="linkTelegramChat()">📲 Vincular Telegram</button>
           </div>
         </div>
@@ -435,7 +435,8 @@ export class WebDashboardSpaService {
 
     async function loadParcels() {
       const res = await fetch('/api/v1/zoning/parcels');
-      parcelsCache = await res.json();
+      const data = await res.json();
+      parcelsCache = Array.isArray(data) ? data : (data.parcels || []);
       const sel = document.getElementById('parcelSelect');
       sel.innerHTML = parcelsCache.map(p =>
         \`<option value="\${p.parcelId}" \${p.parcelId === currentParcelId ? 'selected' : ''}>🍉 \${p.parcelName} (\${p.areaHectares} ha - \${p.watermelonVariety})</option>\`
@@ -489,9 +490,10 @@ export class WebDashboardSpaService {
 
     function renderSatelliteGrid(gridData) {
       gridLayerGroup.clearLayers();
-      if (!gridData || !gridData.gridGeoJson) return;
+      const geoJsonData = gridData?.featureCollection || gridData?.gridGeoJson || gridData;
+      if (!geoJsonData || !geoJsonData.features) return;
 
-      L.geoJSON(gridData.gridGeoJson, {
+      L.geoJSON(geoJsonData, {
         style: (feature) => ({
           color: feature.properties.isStressedCell ? '#ff1744' : '#1b5e20',
           weight: feature.properties.isStressedCell ? 1.5 : 0.4,
@@ -784,16 +786,15 @@ export class WebDashboardSpaService {
     async function linkTelegramChat() {
       const chatId = document.getElementById('telegramChatIdInput').value.trim();
       if (!chatId) return;
-      const res = await fetch('/api/v1/alerts/subscriptions', {
+      const res = await fetch('/api/v1/alerts/farmers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          farmerId: '00000000-0000-0000-0000-000000000010',
-          fullName: 'Productor Demo AgroSat',
+          fullName: 'Juan Carlos Reyes',
           telegramChatId: chatId,
           parcelId: currentParcelId,
-          parcelAlias: 'Parcela Sandía Activa',
-          cooldownMinutes: 15
+          parcelAlias: 'Parcela Sandía Lote Norte',
+          cooldownMinutes: 1
         })
       });
       if (res.ok) {
